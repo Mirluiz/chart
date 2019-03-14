@@ -6,7 +6,9 @@ function getData(){
     $.ajax({
         url: '/telegramChart/dummy/dummyGraph.json',
     }).done(function (data) {
-        // console.log(data);
+        setGraphData(data);
+        setTransform(data);
+        getAllVertex(graphData);
     })
 }
 

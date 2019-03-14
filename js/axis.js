@@ -30,7 +30,7 @@ function drawFields(){
     let canv = document.getElementById(drawArea);
     let canvasWidth = canv.width;
 
-    let line = new Line(new Coord(0, 40), new Coord(canvasWidth, 40));
+    let line = new Line(new Coord(0, _Y_ReverseMainGraph(40)), new Coord(canvasWidth, _Y_ReverseMainGraph(40)));
 
     let fieldsAmount = 6;
     let i_cnt = 0;
@@ -38,8 +38,8 @@ function drawFields(){
     while(i_cnt < fieldsAmount){
         drawLine(line, 2, telegramFieldsGrey);
 
-        line.begin.y += axis_Y_step;
-        line.end.y += axis_Y_step;
+        line.begin.y -= axis_Y_step;
+        line.end.y -= axis_Y_step;
 
         i_cnt++;
     }

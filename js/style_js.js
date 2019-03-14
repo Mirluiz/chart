@@ -6,11 +6,11 @@
 
 function changeCursor(){
 
-    var fcsdLenght = focusedObjects.length;
-    if(fcsdLenght>0 && focusedObjects[0]){
-        if(focusedObjects[0].border){
+    var fcsdLenght = focus.length;
+    if(fcsdLenght>0 && focus[0] && focus[0].type=='selection'){
+        if(focus[0].border){
             $('body').css('cursor', 'e-resize')
-        } else if (focusedObjects[0].side == 'center') {
+        } else if (focus[0].side == 'center') {
             $('body').css('cursor', 'grab');
         }
     } else {

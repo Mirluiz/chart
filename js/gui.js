@@ -3,7 +3,8 @@
  */
 
 
-var focusedObjects = [];
+let focus = [];
+
 
 function clearCanvas(){
     let canv = document.getElementById(drawArea);
@@ -21,8 +22,15 @@ function redrawAll(){
     drawFields();
     drawFieldsValuesY();
     drawFieldsValuesX();
-    drawPreviewGraph();
+    drawPreviewSection();
 
+    // drawAllGraphVertex();
+    // drawAllPreviewVertex();
+
+    drawAllPreviewLine();
+    drawAllGraphLine();
+
+    drawScene();
 }
 
 
@@ -34,30 +42,59 @@ function updateFocusedObjects( x, y) {
     redrawAll();
 
     let objs = [];
-    objs = objs.concat(getSelectionInFocus(x, y));
+    objs = objs.concat(getPreviewSelectionInFocus(x, y));
+    objs = objs.concat(getMainGraphInFocus(x, y));
 
-    focusedObjects = objs;
+    focus = objs;
 
     changeCursor();
 }
 
-function getSelectionInFocus(x, y){
+function getMainGraphInFocus(x, y){
+
+    _tc({Number: x});
+    _tc({Number: y});
+    let ret = [];
+    let vL =  scene.objects['vertLine'];
+    if ( y < getCanvasMaxHeight() - previewFieldHeight - 40) {
+        vL.draw = true;
+        let o = Object.assign({}, defaultFocus);
+
+        o.type = 'mainGraph';
+        if (Math.abs(selection.object.begin.x - x) < 10) {
+            o.border = true;
+            o.side = 'left';
+        } else if (Math.abs(selection.object.end.x - x) < 10) {
+            o.border = true;
+            o.side = 'right';
+        } else if (x > selection.object.begin.x && x < selection.object.end.x ) {
+            o.border = false;
+            o.side = 'center';
+        }
+
+        ret.push(o);
+    } else {
+        vL.draw = false;
+    }
+    return ret;
+}
+
+function getPreviewSelectionInFocus(x, y){
 
     _tc({Number: x});
     _tc({Number: y});
     let ret = [];
 
-    if ( y > selection.begin.y && y < selection.end.y && ( x > selection.begin.x - 10 && x < selection.end.x + 10)) {
-        let o = Object.assign({}, defaultFocusedObject);
-
+    if ( y > selection.object.begin.y && y < selection.object.end.y && ( x > selection.object.begin.x - 10 && x < selection.object.end.x + 10)) {
+        let o = Object.assign({}, defaultFocus);
         o.type = 'selection';
-        if (Math.abs(selection.begin.x - x) < 10) {
+        if (Math.abs(selection.object.begin.x - x) < 10) {
             o.border = true;
             o.side = 'left';
-        } else if (Math.abs(selection.end.x - x) < 10) {
+        } else if (Math.abs(selection.object.end.x - x) < 10) {
             o.border = true;
             o.side = 'right';
-        } else if (x > selection.begin.x && x < selection.end.x ) {
+        } else if (x > selection.object.begin.x && x < selection.object.end.x ) {
             o.border = false;
             o.side = 'center';
         }

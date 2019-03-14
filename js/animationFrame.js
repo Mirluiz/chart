@@ -15,10 +15,9 @@ let start = Date.now();
 function step(timestamp) {
 
     if(animationStop){
-        window.webkitCancelAnimationFrame(animation);
-        // return;
+        // window.webkitCancelAnimationFrame(animation);
+        return;
     }
-
     let progress  = timestamp - start;
 
     if (progress < 2000) {
@@ -26,5 +25,5 @@ function step(timestamp) {
         requestAnimationFrame(step);
     }
 }
-var animation = requestAnimationFrame(step);
+// var animation = requestAnimationFrame(step);
 

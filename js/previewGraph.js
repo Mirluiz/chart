@@ -4,50 +4,192 @@
 
 let previewFieldHeight = null;
 
-let leftBlur = Rectangular.createDefault();
-let rightBlur = Rectangular.createDefault();
-let selection = Rectangular.createDefault();
-let selectionBorder = 4;
+let leftBlur, rightBlur, selection;
 
+let selectionBorder = 4;
+let previewOffset = 25;
 let borderOffset = 10;
 
+
+let centerBorderedRect, leftBorderVerticalRect, rightBorderVerticalRect;
+
+
+function previewMoveHandler() {
+
+    if(selection.update){
+        selection.updateFunction();
+    }
+}
+
+
+function drawPreviewGraph(vertex) {
+    if(!vertex)return;
+
+    let valuePos = editorToPreview(vertex.x, vertex.y);
+
+    // drawFillCircle(1, valuePos, 'black');
+}
+
+
+function drawAllPreviewVertex() {
+    if(graphVertexs.length < 1) return;
+
+    for (let graph of graphVertexs) {
+
+        let i_cnt = 0;
+        let i_max = graph.object.length;
+
+        while (i_cnt < i_max) {
+            drawPreviewGraph(graph.object[i_cnt]);
+            i_cnt++;
+        }
+
+    }
+}
+
+
+function drawAllPreviewLine() {
+    if(graphVertexs.length < 1) return;
+
+    for (let graph of graphVertexs) {
+
+        let i_cnt = 0;
+        let i_max = graph.object.length;
+
+        while (i_cnt < i_max - 1) {
+            let begin = editorToPreview(graph.object[i_cnt].x, (graph.object[i_cnt].y));
+            let end = editorToPreview(graph.object[i_cnt+1].x, (graph.object[i_cnt+1].y));
+            // console.log(graph.object[i_cnt+1].y)
+            // console.log(end.y);
+            begin.y = _Y_Reverse(begin.y);
+            end.y = _Y_Reverse(end.y);
+            let line = new Line(begin, end);
+            drawLine(line, 3, graph.color);
+            i_cnt++;
+        }
+
+    }
+}
+
+function previewClickHandler(x, y, isUp = false) {
+
+    if(isUp){
+        selection.update = false;
+        return;
+    }
+
+    if(focus[0] && focus[0].type=='selection' && !focus[0].border){
+
+        selection.update = true;
+
+        let diffBegin = mousePos.x - selection.object.begin.x;
+        let diffEnd = selection.object.end.x - mousePos.x;
+
+        selection.setUpdate(function () {
+            this.object.begin.x = mousePos.x - diffBegin;
+            this.object.end.x = mousePos.x + diffEnd;
+
+            centerBorderedRect.object.begin.x =  mousePos.x  - diffBegin;
+            centerBorderedRect.object.end.x = mousePos.x + diffEnd;
+
+            rightBlur.object.begin.x = selection.object.end.x - borderOffset/2;
+
+
+            updateBlurs();
+
+        });
+    } else if(focus[0]&&focus[0].type == 'selection'&&focus[0].border) {
+
+        selection.update = true;
+
+        if (focus[0].side == 'left') {
+            selection.setUpdate(function () {
+
+                this.object.begin.x = mousePos.x;
+                centerBorderedRect.object.begin.x = mousePos.x;
+                // this.object.end.x = mousePos.x + (this.object.end.x - this.object.begin.x);
+
+                leftBlur.object.end.x = selection.object.begin.x - borderOffset/2;
+
+
+                updateBlurs();
+
+            });
+
+        } else {
+            selection.setUpdate(function () {
+
+                // this.object.begin.x = mousePos.x - (this.object.end.x - this.object.begin.x);
+                this.object.end.x = mousePos.x ;
+                centerBorderedRect.object.end.x = mousePos.x ;
+
+                rightBlur.object.begin.x = selection.object.end.x - borderOffset/2;
+
+
+                updateBlurs();
+
+            });
+
+        }
+    }
+}
+
+
+
+function initPreview() {
+    // getPrewRects();
+    previewSelectionForms();
+}
+
+
+
+
+
+function previewSelectionForms() {
+
+    centerBorderedRect = new Mesh(Rectangular.copy(selection.object), 'rect');
+    leftBorderVerticalRect = new Mesh(Rectangular.createDefault(), 'rect');
+    rightBorderVerticalRect = new Mesh(Rectangular.createDefault(), 'rect');
+
+    centerBorderedRect.object.begin.y += selectionBorder/2;
+    centerBorderedRect.object.end.y -= selectionBorder/2;
+
+    updateBlurs();
+
+}
+
+function updateBlurs() {
+
+    leftBorderVerticalRect.object.begin.x  = selection.object.begin.x - borderOffset/2;
+    leftBorderVerticalRect.object.begin.y  = selection.object.begin.y;
+    leftBorderVerticalRect.object.end.x  = selection.object.begin.x + borderOffset/2;
+    leftBorderVerticalRect.object.end.y  = selection.object.end.y;
+
+    rightBorderVerticalRect.object.begin.x  = selection.object.end.x - borderOffset/2;
+    rightBorderVerticalRect.object.begin.y  = selection.object.begin.y;
+    rightBorderVerticalRect.object.end.x  = selection.object.end.x + borderOffset/2;
+    rightBorderVerticalRect.object.end.y  = selection.object.end.y;
+}
+
+
+
 function drawPreviewFieldLeftToSelection() {
-    leftBlur.end.x = selection.begin.x - borderOffset/2;
-    drawFilledRect(leftBlur, telegramPreviewFieldBlue);
+    leftBlur.object.end.x = selection.object.begin.x - borderOffset/2;
+    drawFillRect(leftBlur.object, telegramPreviewFieldBlue);
 }
 function drawPreviewFieldRightToSelection() {
-    rightBlur.begin.x = selection.end.x + borderOffset/2;
-    drawFilledRect(rightBlur, telegramPreviewFieldBlue);
+    rightBlur.object.begin.x = selection.object.end.x + borderOffset/2;
+    drawFillRect(rightBlur.object, telegramPreviewFieldBlue);
 }
 function drawPreviewSelection() {
 
-    let selectionArea = Rectangular.copy(selection);
-
-        selectionArea.begin.y += selectionBorder/2
-        selectionArea.end.y -= selectionBorder/2
-
-    drawStrokedRect(selectionArea, selectionBorder,  telegramPreviewFieldBlueDarker);
-
-    let leftBorderVerticalRect = Rectangular.createDefault();
-        leftBorderVerticalRect.begin.x  = selection.begin.x - borderOffset/2;
-        leftBorderVerticalRect.begin.y  = selection.begin.y;
-        leftBorderVerticalRect.end.x  = selection.begin.x + borderOffset/2;
-        leftBorderVerticalRect.end.y  = selection.end.y;
-
-    drawFilledRect(leftBorderVerticalRect,  telegramPreviewFieldBlueDarker);
-
-    let rightBorderVerticalRect = Rectangular.createDefault();
-        rightBorderVerticalRect.begin.x  = selection.end.x - borderOffset/2;
-        rightBorderVerticalRect.begin.y  = selection.begin.y;
-        rightBorderVerticalRect.end.x  = selection.end.x + borderOffset/2;
-        rightBorderVerticalRect.end.y  = selection.end.y;
-
-    drawFilledRect(rightBorderVerticalRect,  telegramPreviewFieldBlueDarker);
+    drawStrokeRect(centerBorderedRect.object, selectionBorder,  telegramPreviewFieldBlueDarker);
+    drawFillRect(leftBorderVerticalRect.object,  telegramPreviewFieldBlueDarker);
+    drawFillRect(rightBorderVerticalRect.object,  telegramPreviewFieldBlueDarker);
 
 }
 
-
-function drawPreviewGraph() {
+function drawPreviewSection() {
     drawPreviewFieldLeftToSelection();
     drawPreviewFieldRightToSelection();
     drawPreviewSelection();
@@ -61,31 +203,37 @@ function drawPreviewGraph() {
 
 function getPrewRects() {
 
+    leftBlur = new Mesh(Rectangular.createDefault(), 'rect');
+    selection = new Mesh(Rectangular.createDefault(), 'rect');
+    rightBlur = new Mesh(Rectangular.createDefault(), 'rect');
+
     let canv = document.getElementById(drawArea);
 
+    leftBlur.object.begin.y = _Y_Reverse(previewFieldHeight - previewOffset);
+    leftBlur.object.end.y = _Y_Reverse(previewOffset);
 
-    leftBlur.begin.y = _Y_Reverse(previewFieldHeight - 10);
-    leftBlur.end.y = _Y_Reverse(10);
+    rightBlur.object.begin.y = _Y_Reverse(previewFieldHeight - previewOffset);
+    rightBlur.object.end.y = _Y_Reverse(previewOffset);
+    rightBlur.object.end.x = canv.width;
 
-    rightBlur.begin.y = _Y_Reverse(previewFieldHeight - 10);
-    rightBlur.end.y = _Y_Reverse(10);
-    rightBlur.end.x = canv.width;
+    selection.object.begin.y = _Y_Reverse(previewFieldHeight - previewOffset);
+    selection.object.end.y = _Y_Reverse(previewOffset);
 
-    selection.begin.y = _Y_Reverse(previewFieldHeight - 10);
-    selection.end.y = _Y_Reverse(10);
-
-    selection.begin.x = 200;
-    selection.end.x = 400;
+    selection.object.begin.x = 200;
+    selection.object.end.x = 400;
 }
 
 
 function getPreviewFieldHeight() {
     let canv = document.getElementById(drawArea);
-
-    let width = canv.width;
     let height = canv.height;
-
-    previewFieldHeight = height*.15;
-
+    previewFieldHeight = height*.17;
     getPrewRects();
 }
+
+
+
+
+
+
+

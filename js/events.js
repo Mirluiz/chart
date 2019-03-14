@@ -4,26 +4,47 @@
 
 
 let mousePos = new Coord(0, 0);
+let mouseClickPos = new Coord(0, 0);
 
 function mouseMoveHandler(e) {
     let x = e.offsetX;
     let y = e.offsetY;
 
+    let coor = new Coord(x, y);
+    updateFocusedObjects(coor.x, coor.y);
+
     mousePos.x = x;
     mousePos.y = y;
 
+    previewMoveHandler(x, y);
 
-    let coor = new Coord(x, y);
-
-
-    updateFocusedObjects(coor.x, coor.y);
-
-
+    e.preventDefault();
 }
 
 
 
-function mouseClickHandler(e) {
+function mouseMouseDown(e) {
+
     let x = e.offsetX;
     let y = e.offsetY;
+
+    let coor = new Coord(x, y);
+    updateFocusedObjects(coor.x, coor.y);
+
+    mouseClickPos.x = x;
+    mouseClickPos.y = y;
+
+    previewClickHandler(x, y);
+    // mainGraphClickHandler(x, y);
+}
+
+function mouseMouseUp(e) {
+    let x = e.offsetX;
+    let y = e.offsetY;
+
+    let coor = new Coord(x, y);
+
+
+
+    previewClickHandler(x, y, true);
 }

@@ -15,24 +15,41 @@ const telegramPreviewFieldBlue =  '#F5F9FB';
 const telegramPreviewFieldBlueDarker =  '#DDEAF3';
 
 
-const defaultTransform = {
-    scale: 1,
-    xOffset: 0,
-    yOffset: 0
-};
 
 
 const monthEngNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
     "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
 ];
 
-/**
- *
- * @type {{type: null, border: null, side: null, object: null}}
- */
-const defaultFocusedObject = {
+
+const defaultTransform = {
+    xOffset: 0,
+    xRatio: 0,
+    yRatio: 0,
+    prevYRatio: 0,
+};
+
+const graphContainer = {
+    'name': null,
+    'color': null,
+    'object': []
+};
+
+
+const defaultFocus = {
     type: null,
     border: null,
     side: null,
     object: null
+};
+
+
+const defaultMesh = {
+    type: null,
+    object: null
+};
+
+const defaultMeshMaterial = {
+    color: null,
+    width: null
 }

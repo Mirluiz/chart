@@ -3,7 +3,7 @@
  */
 
 
-let currentTransform = null;
+
 
 
 class Coord {
@@ -27,8 +27,12 @@ class Line {
         this.end = end;
     }
 
-    copy(){
+    static copy(line){
         return new Line(new Coord(this.begin.x, this.begin.y), new Coord(this.end.x, this.end.y))
+    }
+
+    static createDefault() {
+        return new Line(new Coord(0,  0), new Coord(0, 0))
     }
 }
 
@@ -59,12 +63,4 @@ function dataToGraph(){
 
 
 
-function updateTransform(transform = null) {
-    if (transform) {
-        currentTransform = Object.assign({}, transform);
-    }
-    if (!currentTransform) {
-        currentTransform = Object.assign({}, defaultTransform);
-    }
 
-}

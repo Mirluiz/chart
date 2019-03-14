@@ -6,11 +6,18 @@ $(function () {
     // });
 
     $(drawAreaSelector).mousemove(mouseMoveHandler);
-    $(drawAreaSelector).mouseup(mouseClickHandler);
+    $(drawAreaSelector).mousedown(mouseMouseDown);
+    $(drawAreaSelector).mouseup(mouseMouseUp);
 
 
 
     getPreviewFieldHeight();
     setAxisSteps();
+    addVertLine();
+    initPreview();
+    getData();
+
+    var animation = requestAnimationFrame(step);
+
 
 });

@@ -15,12 +15,8 @@
 function drawLine(line, w = 2, color = 'black') {
 
     _tc({Object: line});
-    _tc({Object: line.begin});
-    _tc({Object: line.end});
-    _tc({Number: line.begin.x});
-    _tc({Number: line.begin.y});
-    _tc({Number: line.end.x});
-    _tc({Number: line.end.y});
+    _tc({Number: w});
+    _tc({String: color});
 
 
 
@@ -31,8 +27,8 @@ function drawLine(line, w = 2, color = 'black') {
     ctx.beginPath();
     ctx.strokeStyle = color;
     ctx.lineWidth = w;
-    ctx.moveTo(line.begin.x, _Y_ReverseMainGraph(line.begin.y));
-    ctx.lineTo(line.end.x, _Y_ReverseMainGraph(line.end.y));
+    ctx.moveTo(line.begin.x, line.begin.y);
+    ctx.lineTo(line.end.x, line.end.y);
     ctx.stroke();
 
     ctx.restore();
@@ -53,8 +49,6 @@ function drawText(text, pos, centerAlign = false, fontSize = 10, fontName = 'Ari
 
     _tc({String: text});
     _tc({Object: pos});
-    _tc({Number: pos.x});
-    _tc({Number: pos.y});
     _tc({Boolean: centerAlign});
     _tc({Number: fontSize});
     _tc({String: fontName});
@@ -78,7 +72,7 @@ function drawText(text, pos, centerAlign = false, fontSize = 10, fontName = 'Ari
     ctx.restore();
 }
 
-function drawStrokedRect(rect, w = 1,  color = 'black') {
+function drawStrokeRect(rect, w = 1, color = 'black') {
 
     _tc({Object: rect});
     _tc({Object: rect.begin});
@@ -102,15 +96,9 @@ function drawStrokedRect(rect, w = 1,  color = 'black') {
 
 }
 
-function drawFilledRect(rect,  color = 'black') {
+function drawFillRect(rect, color = 'black') {
 
     _tc({Object: rect});
-    _tc({Object: rect.begin});
-    _tc({Object: rect.end});
-    _tc({Number: rect.begin.x});
-    _tc({Number: rect.begin.y});
-    _tc({Number: rect.end.x});
-    _tc({Number: rect.end.y});
     _tc({String: color});
 
     let canv = document.getElementById(drawArea);
@@ -124,12 +112,16 @@ function drawFilledRect(rect,  color = 'black') {
 
 }
 
+/**
+ *
+ * @param rad {number}
+ * @param pos {object}
+ * @param color {string}
+ */
 function drawFillCircle(rad, pos, color = 'black'){
 
     _tc({Number: rad});
     _tc({Object: pos});
-    _tc({Number: pos.x});
-    _tc({Number: pos.y});
     _tc({String: color});
 
     let canv = document.getElementById(drawArea);
