@@ -112,3 +112,6 @@ function minVal(arr) {
 
     return minNum;
 }
+
+
+let f = new FontFace('test', 'url(x)');

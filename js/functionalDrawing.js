@@ -45,7 +45,7 @@ function drawLine(line, w = 2, color = 'black') {
  * @param w {number}
  * @param color {string}
  */
-function drawText(text, pos, centerAlign = false, fontSize = 10, fontName = 'Arial',  w = 1, color = 'black') {
+function drawText(text, pos, centerAlign = false, fontSize = 10, fontName = 'Arial',  w = 1, color = 'black', bold='') {
 
     _tc({String: text});
     _tc({Object: pos});
@@ -60,7 +60,7 @@ function drawText(text, pos, centerAlign = false, fontSize = 10, fontName = 'Ari
     let ctx = canv.getContext('2d');
     ctx.save();
 
-    let txt = fontSize + "px " + fontName;
+    let txt = bold + " "  + fontSize + "px " + fontName;
     let txtW =  ctx.measureText(txt).width;
     ctx.font = txt;
     ctx.fillStyle = color;
@@ -75,12 +75,6 @@ function drawText(text, pos, centerAlign = false, fontSize = 10, fontName = 'Ari
 function drawStrokeRect(rect, w = 1, color = 'black') {
 
     _tc({Object: rect});
-    _tc({Object: rect.begin});
-    _tc({Object: rect.end});
-    _tc({Number: rect.begin.x});
-    _tc({Number: rect.begin.y});
-    _tc({Number: rect.end.x});
-    _tc({Number: rect.end.y});
     _tc({String: color});
     _tc({Number: w});
 
@@ -94,6 +88,80 @@ function drawStrokeRect(rect, w = 1, color = 'black') {
 
     ctx.restore();
 
+}
+
+function drawStrokeRounRect(rect, w = 1, r = 1, color = 'black') {
+    _tc({Object: rect});
+    _tc({String: color});
+    _tc({Number: w});
+
+    let radius = 20;
+    let a, b, c, d; //rect vertexs
+    a = new Coord(rect.begin.x, rect.begin.y);
+    b = new Coord(rect.end.x, rect.begin.y);
+    c = new Coord(rect.end.x, rect.end.y);
+    d = new Coord(rect.begin.x, rect.end.y);
+
+
+    let canv = document.getElementById(drawArea);
+    let ctx = canv.getContext('2d');
+    ctx.save();
+
+    ctx.strokeStyle = color;
+    ctx.lineWidth = w;
+
+    ctx.beginPath();
+    ctx.moveTo(a.x, a.y + radius);
+    ctx.quadraticCurveTo(a.x, a.y, a.x + radius, a.y);
+    ctx.lineTo(b.x - radius, b.y);
+    ctx.quadraticCurveTo(b.x, b.y, b.x, b.y + radius);
+    ctx.lineTo(c.x , c.y - radius);
+    ctx.quadraticCurveTo(c.x, c.y, c.x - radius, c.y);
+    ctx.lineTo(d.x + radius, d.y);
+    ctx.quadraticCurveTo(d.x, d.y, d.x, d.y - radius);
+    ctx.closePath();
+    ctx.stroke();
+
+    ctx.restore();
+}
+
+function drawFillRounRect(rect, w = 1, r = 1, color = 'black', fillColor = 'black', blur = false) {
+    _tc({Object: rect});
+    _tc({String: color});
+    _tc({Number: w});
+
+    let radius = r;
+    let a, b, c, d; //rect vertexs
+    a = new Coord(rect.begin.x, rect.begin.y);
+    b = new Coord(rect.end.x, rect.begin.y);
+    c = new Coord(rect.end.x, rect.end.y);
+    d = new Coord(rect.begin.x, rect.end.y);
+
+
+    let canv = document.getElementById(drawArea);
+    let ctx = canv.getContext('2d');
+    ctx.save();
+
+    ctx.strokeStyle = 'white';
+    ctx.fillStyle = fillColor;
+    ctx.lineWidth = w;
+    ctx.shadowBlur = blur;
+    ctx.shadowColor = "rgba(0,	0,	0, .2)";
+
+    ctx.beginPath();
+    ctx.moveTo(a.x, a.y + radius);
+    ctx.quadraticCurveTo(a.x, a.y, a.x + radius, a.y);
+    ctx.lineTo(b.x - radius, b.y);
+    ctx.quadraticCurveTo(b.x, b.y, b.x, b.y + radius);
+    ctx.lineTo(c.x , c.y - radius);
+    ctx.quadraticCurveTo(c.x, c.y, c.x - radius, c.y);
+    ctx.lineTo(d.x + radius, d.y);
+    ctx.quadraticCurveTo(d.x, d.y, d.x, d.y - radius);
+    ctx.closePath();
+    ctx.stroke();
+    ctx.fill();
+
+    ctx.restore();
 }
 
 function drawFillRect(rect, color = 'black') {
@@ -118,7 +186,7 @@ function drawFillRect(rect, color = 'black') {
  * @param pos {object}
  * @param color {string}
  */
-function drawFillCircle(rad, pos, color = 'black'){
+function drawFillCircle(rad, pos, w = 1, color = 'white', borderColor= 'black'){
 
     _tc({Number: rad});
     _tc({Object: pos});
@@ -129,9 +197,36 @@ function drawFillCircle(rad, pos, color = 'black'){
     ctx.save();
 
     ctx.fillStyle = color;
+    ctx.strokeStyle = borderColor;
+    ctx.lineWidth = w;
     ctx.beginPath();
     ctx.arc(pos.x, pos.y, rad, 0, 2 * Math.PI);
     ctx.fill();
+    ctx.stroke();
+
+    ctx.restore();
+}
+
+
+/**
+ *
+ * @param rad {number}
+ * @param pos {object}
+ * @param color {string}
+ */
+function drawStrokeCircle(rad, pos, color = 'black'){
+
+    _tc({Number: rad});
+    _tc({Object: pos});
+    _tc({String: color});
+
+    let canv = document.getElementById(drawArea);
+    let ctx = canv.getContext('2d');
+    ctx.save();
+
+    ctx.strokeStyle = color;
+    ctx.beginPath();
+    ctx.arc(pos.x, pos.y, rad, 0, 2 * Math.PI);
     ctx.stroke();
 
     ctx.restore();

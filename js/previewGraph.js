@@ -18,6 +18,7 @@ function previewMoveHandler() {
 
     if(selection.update){
         selection.updateFunction();
+        setTransform(graphData);
     }
 }
 
@@ -28,6 +29,9 @@ function drawPreviewGraph(vertex) {
     let valuePos = editorToPreview(vertex.x, vertex.y);
 
     // drawFillCircle(1, valuePos, 'black');
+
+
+    drawStrokeCircle(3, valuePos, 'black');
 }
 
 
@@ -36,11 +40,13 @@ function drawAllPreviewVertex() {
 
     for (let graph of graphVertexs) {
 
+        if(!graph.draw)continue;
+
         let i_cnt = 0;
         let i_max = graph.object.length;
 
         while (i_cnt < i_max) {
-            drawPreviewGraph(graph.object[i_cnt]);
+            drawPreviewGraph(graph.object[i_cnt].point);
             i_cnt++;
         }
 
@@ -53,14 +59,14 @@ function drawAllPreviewLine() {
 
     for (let graph of graphVertexs) {
 
+        if(!graph.draw)continue;
+
         let i_cnt = 0;
         let i_max = graph.object.length;
 
         while (i_cnt < i_max - 1) {
-            let begin = editorToPreview(graph.object[i_cnt].x, (graph.object[i_cnt].y));
-            let end = editorToPreview(graph.object[i_cnt+1].x, (graph.object[i_cnt+1].y));
-            // console.log(graph.object[i_cnt+1].y)
-            // console.log(end.y);
+            let begin = editorToPreview(graph.object[i_cnt].point.x, (graph.object[i_cnt].point.y));
+            let end = editorToPreview(graph.object[i_cnt+1].point.x, (graph.object[i_cnt+1].point.y));
             begin.y = _Y_Reverse(begin.y);
             end.y = _Y_Reverse(end.y);
             let line = new Line(begin, end);
@@ -93,8 +99,6 @@ function previewClickHandler(x, y, isUp = false) {
             centerBorderedRect.object.end.x = mousePos.x + diffEnd;
 
             rightBlur.object.begin.x = selection.object.end.x - borderOffset/2;
-
-
             updateBlurs();
 
         });

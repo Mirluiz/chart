@@ -22,15 +22,20 @@ function redrawAll(){
     drawFields();
     drawFieldsValuesY();
     drawFieldsValuesX();
-    drawPreviewSection();
-
-    // drawAllGraphVertex();
-    // drawAllPreviewVertex();
-
     drawAllPreviewLine();
     drawAllGraphLine();
+    drawPreviewSection();
+
+    drawAllGraphVertex();
+    // drawAllPreviewVertex();
 
     drawScene();
+
+    let rectSize = 200;
+
+    showStaticInfo(focus, mousePos);
+
+
 }
 
 
@@ -54,28 +59,24 @@ function getMainGraphInFocus(x, y){
 
     _tc({Number: x});
     _tc({Number: y});
+
     let ret = [];
-    let vL =  scene.objects['vertLine'];
-    if ( y < getCanvasMaxHeight() - previewFieldHeight - 40) {
-        vL.draw = true;
-        let o = Object.assign({}, defaultFocus);
 
-        o.type = 'mainGraph';
-        if (Math.abs(selection.object.begin.x - x) < 10) {
-            o.border = true;
-            o.side = 'left';
-        } else if (Math.abs(selection.object.end.x - x) < 10) {
-            o.border = true;
-            o.side = 'right';
-        } else if (x > selection.object.begin.x && x < selection.object.end.x ) {
-            o.border = false;
-            o.side = 'center';
+
+
+    for(let graph of graphVertexs){
+        for(let i = 0; i < graph.object.length; i++){
+            let o = Object.assign({}, defaultFocus);
+            if(Math.abs(x - editorToWorld(graph.object[i].point.x, graph.object[i].point.y).x) < 10){
+                o.type = 'infoBar';
+                o.info = graph.object[i].info;
+                o.object = graph.object[i].point;
+                ret.push(o);
+            }
         }
-
-        ret.push(o);
-    } else {
-        vL.draw = false;
     }
+
+
     return ret;
 }
 
@@ -105,3 +106,31 @@ function getPreviewSelectionInFocus(x, y){
     return ret;
 }
 
+
+
+
+function toggleGraph() {
+    if($(this).prop('checked')) {
+        if($(this).attr('id') == 'joined'){
+            graphVertexs[0].draw = true
+        } else {
+            graphVertexs[1].draw = true
+        }
+    } else {
+        if($(this).attr('id') == 'joined'){
+            graphVertexs[0].draw = false;
+            // reDrawYAxisValue(maxVal(graphData[0].columns[2]));
+        } else {
+            graphVertexs[1].draw = false;
+            // reDrawYAxisValue(maxVal(graphData[0].columns[1]))
+        }
+    }
+
+    setTransform(graphData)
+    // if ($('#joined').prop('checked')) {
+    //     reDrawYAxisValue(maxVal(graphData[0].columns[1]))
+    // } else {
+    //     reDrawYAxisValue(maxVal(graphData[0].columns[2]))
+    // }
+
+}

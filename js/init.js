@@ -10,12 +10,15 @@ $(function () {
     $(drawAreaSelector).mouseup(mouseMouseUp);
 
 
+    $('#left, #joined').click(toggleGraph);
+
 
     getPreviewFieldHeight();
     setAxisSteps();
     addVertLine();
     initPreview();
     getData();
+    
 
     var animation = requestAnimationFrame(step);
 

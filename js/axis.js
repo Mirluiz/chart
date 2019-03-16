@@ -4,7 +4,7 @@
 
 let axis_Y_step = 100;
 let axis_X_step = 100;
-let maxStepValue = 500;
+let maxYValue = null;
 
 let yAxisSteps = [];
 let xAxisSteps = [];
@@ -30,7 +30,7 @@ function drawFields(){
     let canv = document.getElementById(drawArea);
     let canvasWidth = canv.width;
 
-    let line = new Line(new Coord(0, _Y_ReverseMainGraph(40)), new Coord(canvasWidth, _Y_ReverseMainGraph(40)));
+    let line = new Line(new Coord(0, _Y_ReverseMainGraph(customOffset)), new Coord(canvasWidth, _Y_ReverseMainGraph(customOffset)));
 
     let fieldsAmount = 6;
     let i_cnt = 0;
@@ -49,9 +49,9 @@ function drawFields(){
 /**
  *
  */
-function drawFieldsValuesY(){
-    getDivisionYAxis(maxStepValue);
 
+// getDivisionYAxis(maxStepValue);
+function drawFieldsValuesY(){
     let canv = document.getElementById(drawArea);
     let canvasWidth = canv.width;
     let pos = new Coord(10, 50);
@@ -67,7 +67,6 @@ function drawFieldsValuesY(){
  *
  */
 function drawFieldsValuesX() {
-    getDivisionXAxis(3,15);
 
     let canv = document.getElementById(drawArea);
     let pos = new Coord(axis_X_step/2, 0);
@@ -120,28 +119,35 @@ function getDivisionYAxis(value) {
  * @param to
  */
 function getDivisionXAxis(from, to) {
+
     _tc({Number: from});
     _tc({Number: to});
 
     xAxisSteps = [];
-    let value = to - from;
 
+    let value = (to - from);
     let fieldDiff = Math.floor(value/5);
 
     let stepValue = 0;
-
     let i_cnt = 0;
     let i_max = 6;
 
     while (i_cnt < i_max) {
-
         let day = from + stepValue;
 
-        let neededTime = getTime(day);
+        let neededTime = new Date();
+            neededTime.setTime(day*currentTransform.timeStapmRation + graphData[0].columns[0][2]);
         let month = monthEngNames[neededTime.getMonth()];
         let monthDay = neededTime.getDate();
         xAxisSteps.push(month + " " + monthDay);
         stepValue += fieldDiff;
         i_cnt++;
     }
+}
+
+
+function reDrawYAxisValue(maxY) {
+    maxYValue = maxY;
+    currentTransform.yRatio = getYRatio(maxY);
+    getDivisionYAxis(maxY);
 }
