@@ -9,6 +9,7 @@ function getData(){
         setGraphData(data);
         setTransform(data);
         getAllVertex(graphData);
+        getDivisionXAxis(selection.object.begin.x, selection.object.end.x);
     })
 }
 

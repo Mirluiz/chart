@@ -31,7 +31,6 @@ function redrawAll(){
 
     drawScene();
 
-    let rectSize = 200;
 
     showStaticInfo(focus, mousePos);
 
@@ -63,16 +62,24 @@ function getMainGraphInFocus(x, y){
     let ret = [];
 
 
-
-    for(let graph of graphVertexs){
-        for(let i = 0; i < graph.object.length; i++){
-            let o = Object.assign({}, defaultFocus);
-            if(Math.abs(x - editorToWorld(graph.object[i].point.x, graph.object[i].point.y).x) < 10){
-                o.type = 'infoBar';
-                o.info = graph.object[i].info;
-                o.object = graph.object[i].point;
-                ret.push(o);
-            }
+    for(let i = 0; i < graphVertexs[0].object.length; i++){
+        let o = Object.assign({}, defaultFocus);
+        if(Math.abs(x - editorToWorld(graphVertexs[0].object[i].point.x, graphVertexs[0].object[i].point.y).x) < 3){
+            o.type = 'infoBar';
+            o.info = graphVertexs[0].object[i].info;
+            o.object = graphVertexs[0].object[i].point;
+            ret.push(o);
+            break;
+        }
+    }
+    for(let i = 0; i < graphVertexs[1].object.length; i++){
+        let o = Object.assign({}, defaultFocus);
+        if(Math.abs(x - editorToWorld(graphVertexs[1].object[i].point.x, graphVertexs[1].object[i].point.y).x) < 3){
+            o.type = 'infoBar';
+            o.info = graphVertexs[1].object[i].info;
+            o.object = graphVertexs[1].object[i].point;
+            ret.push(o);
+            break;
         }
     }
 

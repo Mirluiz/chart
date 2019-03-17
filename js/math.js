@@ -18,6 +18,10 @@ function getXRatio(length, from, to) {
 
 function editorToWorld(x, y) {
 
+    if(!currentTransform){
+        checkTransform();
+    }
+
     let ret = new Coord(x, y);
     ret.x = (x -  currentTransform.xOffset) / currentTransform.xRatio;
     ret.y = y * currentTransform.yRatio;

@@ -20,6 +20,7 @@ function previewMoveHandler() {
         selection.updateFunction();
         setTransform(graphData);
     }
+
 }
 
 
@@ -92,6 +93,11 @@ function previewClickHandler(x, y, isUp = false) {
         let diffEnd = selection.object.end.x - mousePos.x;
 
         selection.setUpdate(function () {
+
+            if(mousePos.x - diffBegin < 0 || mousePos.x + diffEnd > getCanvasMaxWidth()  ){
+                return;
+            }
+
             this.object.begin.x = mousePos.x - diffBegin;
             this.object.end.x = mousePos.x + diffEnd;
 
@@ -109,9 +115,14 @@ function previewClickHandler(x, y, isUp = false) {
         if (focus[0].side == 'left') {
             selection.setUpdate(function () {
 
+                if((mousePos.x < 0 || mousePos.x > getCanvasMaxWidth()) ||
+                    mousePos.x > Math.abs( centerBorderedRect.object.end.x - previewOffset) ||
+                    mousePos.x < Math.abs( centerBorderedRect.object.begin.x - previewOffset)){
+                    return;
+                }
+
                 this.object.begin.x = mousePos.x;
                 centerBorderedRect.object.begin.x = mousePos.x;
-                // this.object.end.x = mousePos.x + (this.object.end.x - this.object.begin.x);
 
                 leftBlur.object.end.x = selection.object.begin.x - borderOffset/2;
 
@@ -223,8 +234,8 @@ function getPrewRects() {
     selection.object.begin.y = _Y_Reverse(previewFieldHeight - previewOffset);
     selection.object.end.y = _Y_Reverse(previewOffset);
 
-    selection.object.begin.x = 200;
-    selection.object.end.x = 400;
+    selection.object.begin.x = 0;
+    selection.object.end.x = getCanvasMaxWidth();
 }
 
 

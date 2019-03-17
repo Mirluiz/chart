@@ -68,15 +68,16 @@ function drawFieldsValuesY(){
  */
 function drawFieldsValuesX() {
 
-    let canv = document.getElementById(drawArea);
-    let pos = new Coord(axis_X_step/2, 0);
+    if(!currentTransform){
+        checkTransform()
+    }
 
-    let canvasHeight = canv.height;
+    let stepRat = (axis_X_step - 20*currentTransform.xRatio)*currentTransform.xRatio;
 
-    let line = new Line(new Coord(10, 0), new Coord(10, canvasHeight));
-
+    let pos = editorToWorld(stepRat/2, 0);
+    // let pos = new Coord(pos.x*stepRat, 0);
+    // console.log(pos.x);
     for(let step of xAxisSteps){
-
         step = step.toString();
 
         drawText(step, pos, true, 20, 'Arial', 1, telegramTextGrey);
@@ -126,15 +127,20 @@ function getDivisionXAxis(from, to) {
     xAxisSteps = [];
 
     let value = (to - from);
-    let fieldDiff = Math.floor(value/5);
+    // let fieldDiff = Math.floor(value/5);
+    //
+    // let stepValue = 0;
+    // let i_cnt = 0;
+    // let i_max = 6;
 
-    let stepValue = 0;
+    let canvasW = getCanvasMaxWidth() - 20;
+    let fieldDiff = Math.floor((value )/6);
+    let stepValue =  fieldDiff/2;
     let i_cnt = 0;
-    let i_max = 6;
+    let i_max = Math.floor(canvasW/(value/7));
 
     while (i_cnt < i_max) {
-        let day = from + stepValue;
-
+        let day = stepValue;
         let neededTime = new Date();
             neededTime.setTime(day*currentTransform.timeStapmRation + graphData[0].columns[0][2]);
         let month = monthEngNames[neededTime.getMonth()];

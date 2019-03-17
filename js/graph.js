@@ -224,7 +224,6 @@ function showStaticInfo(focus, mousePos) {
 
 function drawInfo(rect, texts) {
 
-
     drawFillRounRect(rect, 1 , 15, telegramInfoBarBorder, telegramInfoBarColor, 4);
 
     for(let text of texts){
